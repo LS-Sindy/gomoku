@@ -13,12 +13,6 @@
     align-items: center;
 }
 
-#board {
-    width: 600px;
-    height: 600px;
-    background-color: #DEB887; /* Yellow background */
-}
-
 .info {
     margin-top: 20px;
     font-size: 18px;
@@ -27,4 +21,41 @@
 #restart-button {
     margin-top: 20px;
     font-size: 18px;
+}
+
+#board {
+    width: 600px;
+    height: 600px;
+    background-color: #DEB887;
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.grid-cell {
+    position: relative;
+    border: 1px solid #000;
+}
+
+.piece {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.black {
+    background-color: #000;
+    border: 1px solid #000;
+}
+
+.white {
+    background-color: #fff;
+    border: 1px solid #666;
 }
