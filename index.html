@@ -13,6 +13,9 @@
             <input type="text" id="nickname" placeholder="请输入您的昵称">
             <button id="start-game">开始游戏</button>
         </div>
+        <div id="warning" style="display: none;">
+            <p>请输入您的昵称</p>
+        </div>
     </div>
 
     <!-- 游戏页面 -->
@@ -26,6 +29,12 @@
         <div class="center-panel">
             <h1>五子棋</h1>
             <div id="board"></div>
+            <div id="end-game" style="display: none;">
+                <p>游戏结束</p>
+                <p>获胜者：<span id="winner"></span></p>
+                <button id="restart-button">重新开始</button>
+                <button id="continue-button">继续游戏</button>
+            </div>
             <div class="info">
                 <p>当前玩家：<span id="current-player">黑子</span></p>
             </div>
@@ -38,11 +47,14 @@
             <p>负场：<span id="losses">0</span></p>
             <p>胜率：<span id="win-rate">0%</span></p>
             <div class="button-restart-save">
+                <button id="regret-button">悔棋</button>
+                <button id="give-up-button">认输</button>
                 <button id="restart-button">重新开始</button>
                 <button id="save-button">保存对局</button>
             </div>
         </div>
     </div>
     <script src="script.js"></script>
+    <script src="test.js"></script>
 </body>
 </html>

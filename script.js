@@ -7,6 +7,7 @@ class Gomoku{
         this.turnCount = 0;
         this.startTime = null;
         this.timerInterval = null;
+        this.allMoves = [];
         this.playerStats = {
             nickname: '',
             wins: 0,
@@ -21,12 +22,15 @@ class Gomoku{
     initLoginPage() {
         const loginPage = document.getElementById('start-game');
         loginPage.addEventListener('click', () => {
-            const nickname = document.getElementById('nickname').value;
+            const nickname = document.getElementById('nickname').value.trim();
             if(nickname) {
                 this.playerStats.nickname = nickname;
+                this.allMoves = [];
                 this.startGame();
+                document.getElementById('warning').style.display = 'none';
             } else {
-                alert('请输入昵称!');
+                document.getElementById('warning').style.display = 'block';
+                document.getElementById('nickname').value = '';
             }
         });
     }
@@ -38,7 +42,6 @@ class Gomoku{
         this.startTime = new Date();
         this.startTimer();
         this.updateStats();
-
         this.initBoard();
         this.addEventListeners();
     }
@@ -77,8 +80,20 @@ class Gomoku{
             }
         });
 
+        document.getElementById('regret-button').addEventListener('click', () => {
+            this.regret();
+        });
+
+        document.getElementById('give-up-button').addEventListener('click', () => {
+            this.giveUp();
+        });
+
         document.getElementById('restart-button').addEventListener('click', () => {
             this.restart();
+        });
+
+        document.getElementById('continue-button').addEventListener('click', () => {
+            this.continueGame();
         });
 
         document.getElementById('save-button').addEventListener('click', () => {
@@ -91,20 +106,27 @@ class Gomoku{
         piece.className = `piece ${this.isBlack ? 'black' : 'white'}`;
         cell.appendChild(piece);
 
+        const pieceId = `piece-${row}-${col}`;
+        piece.id = pieceId;
+
         this.turnCount++;
         document.getElementById('turn-count').textContent = this.turnCount;
 
         this.pieces[row][col] = this.isBlack ? 1 : 2;
         this.currentPlayer.textContent = this.isBlack ? '白子' : '黑子';
 
+        this.allMoves.push({
+            row: row,
+            col: col,
+            isBlack: this.isBlack ? 1 : 2
+        });
+
         if (this.checkWin(row, col)) {
-            setTimeout(() => {
-                const winner = this.isBlack ? '黑子' : '白子';
-                alert(`${winner}获胜！`);
-                this.updateGameResult(this.isBlack);
-                this.saveGameRecord(this.checkWin(row, col));
-                this.restart();
-            }, 50);
+            const winner = this.isBlack ? '黑子' : '白子';
+            document.getElementById('winner').textContent = winner;
+            document.getElementById('end-game').style.display = 'block';
+            this.updateGameResult(this.isBlack);
+            this.saveGameRecord(this.checkWin(row, col));
             return;
         }
 
@@ -126,17 +148,6 @@ class Gomoku{
         document.getElementById('player-name').textContent = this.playerStats.nickname;
         const total = this.playerStats.wins + this.playerStats.loses;
         document.getElementById('win-rate').textContent = total > 0 ? `${Math.round(this.playerStats.wins / total * 100)}%` : '0%';
-    }
-
-    saveGameRecord(isWin) {
-        const record = {
-            nickname: this.playerStats.nickname,
-            result: isWin ? (this.isBlack ? '黑子胜' : '白子胜') : '平局',
-            turnCount: this.turnCount,
-            duration: document.getElementById('game-time').textContent,
-            date: new Date().toLocaleDateString() + '/' + this.startTime.toLocaleTimeString()
-        };
-        localStorage.setItem('gameRecord', JSON.stringify(record));
     }
 
     checkWin(row, col) {
@@ -168,8 +179,33 @@ class Gomoku{
         });
     }
 
+    regret() {
+        // 实现悔棋功能
+        console.log('悔棋');
+        if(this.allMoves.length > 0) {
+            const lastMove = this.allMoves.pop();
+            this.pieces[lastMove.row][lastMove.col] = 0;
+            this.isBlack = lastMove.isBlack === 1 ? true : false;
+            this.currentPlayer.textContent = this.isBlack ? '白子' : '黑子';
+            this.turnCount--;
+            document.getElementById('turn-count').textContent = this.turnCount;
+            const piece = document.getElementById(`piece-${lastMove.row}-${lastMove.col}`);
+            if (piece) {
+                piece.parentNode.removeChild(piece);
+            }
+        }
+    }
+
+    giveUp() {
+        // 实现认输功能
+        console.log('认输');
+    }
+
     restart() {
+        // 重新开始游戏
+        console.log('重新开始游戏');
         this.pieces = Array(15).fill().map(() => Array(15).fill(0));
+        document.getElementById('end-game').style.display = 'none';
         this.isBlack = true;
         this.currentPlayer.textContent = '黑子';
         this.initBoard();
@@ -179,6 +215,27 @@ class Gomoku{
         this.startTime = new Date();
         this.startTimer();
         document.getElementById('game-time').textContent = '00:00';
+    }
+
+    continueGame() {
+        // 实现继续游戏
+        console.log('继续游戏');
+        document.getElementById('end-game').style.display = 'none';
+    }
+
+    saveGameRecord(isWin) {
+        // 保存游戏记录
+        console.log('保存游戏记录');
+        const record = {
+            nickname: this.playerStats.nickname,
+            result: isWin ? (this.isBlack ? '黑子胜' : '白子胜') : '平局',
+            turnCount: this.turnCount,
+            duration: document.getElementById('game-time').textContent,
+            date: new Date().toLocaleDateString() + '/' + this.startTime.toLocaleTimeString()
+        };
+        const records = JSON.parse(localStorage.getItem('gameRecords') || '[]');
+        records.push(record);
+        localStorage.setItem('gameRecords', JSON.stringify(records));
     }
 }
 
