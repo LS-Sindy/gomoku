@@ -1,60 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>五子棋</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <!-- 登录页面 -->
-    <div id="login-page" class="login-container">
-        <h1>五子棋</h1>
-        <div class="login-form">
-            <input type="text" id="nickname" placeholder="请输入您的昵称">
-            <button id="start-game">开始游戏</button>
-        </div>
-        <div id="warning" style="display: none;">
-            <p>请输入您的昵称</p>
-        </div>
-    </div>
-
-    <!-- 游戏页面 -->
-    <div id="game-page" class="game-container" style="display: none;">
-        <div class="left-panel">
-            <h2>游戏信息</h2>
-            <p>回合数：<span id="turn-count">0</span></p>
-            <p>用时：<span id="game-time">00:00</span></p>
-        </div>
-        
-        <div class="center-panel">
-            <h1>五子棋</h1>
-            <div id="board"></div>
-            <div id="end-game" style="display: none;">
-                <p>游戏结束</p>
-                <p>获胜者：<span id="winner"></span></p>
-                <button id="restart-button">重新开始</button>
-                <button id="continue-button">继续游戏</button>
-            </div>
-            <div class="info">
-                <p>当前玩家：<span id="current-player">黑子</span></p>
-            </div>
-        </div>
-
-        <div class="right-panel">
-            <h2>玩家信息</h2>
-            <p>昵称：<span id="player-name"></span></p>
-            <p>胜场：<span id="wins">0</span></p>
-            <p>负场：<span id="losses">0</span></p>
-            <p>胜率：<span id="win-rate">0%</span></p>
-            <div class="button-restart-save">
-                <button id="regret-button">悔棋</button>
-                <button id="give-up-button">认输</button>
-                <button id="restart-button">重新开始</button>
-                <button id="save-button">保存对局</button>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
-    <script src="test.js"></script>
-</body>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
 </html>
