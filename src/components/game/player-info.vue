@@ -1,6 +1,7 @@
 <script setup>
 import { useGameStore } from '../../stores/game'
 import { GAME_STATUS } from '../../utils/constants'
+
 const props = defineProps({
   playerName: {
     type: String,
@@ -11,27 +12,23 @@ const props = defineProps({
 const store = useGameStore()
 
 const handleRestart = () => {
-  store.resetGame()
-  store.isGameOver = false
+  store.restartGame()
   console.log('重置游戏')
 }
 
 const handleGiveUp = () => {
   store.updateGameStatus(GAME_STATUS.GIVE_UP)
+  console.log('认输')
 }
 
 const handleRegret = () => {
   store.regretMove()
+  console.log('悔棋')
 }
 
 const handleSaveGame = () => {
-  const gameState = {
-    pieces: store.pieces,
-    currentPlayer: store.currentPlayer,
-    turnCount: store.turnCount,
-    timestamp: new Date().toISOString()
-  }
-  localStorage.setItem('savedGame', JSON.stringify(gameState))
+  store.saveGame()
+  console.log('保存对局')
 }
 </script>
 

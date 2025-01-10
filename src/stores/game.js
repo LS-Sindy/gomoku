@@ -60,7 +60,7 @@ export const useGameStore = defineStore('game', () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   })
 
-  function resetGame() {
+  function restartGame() {
     pieces.value = Array(225).fill(null)
     currentPlayer.value = 1
     gameStatus.value = GAME_STATUS.PLAYING
@@ -84,6 +84,39 @@ export const useGameStore = defineStore('game', () => {
     }
   }
 
+  function saveGame() {
+    const gameState = {
+      pieces: pieces.value,
+      currentPlayer: currentPlayer.value,
+      turnCount: turnCount.value,
+      gameStatus: gameStatus.value,
+      gameTime: gameTime.value,
+      moveHistory: moveHistory.value,
+    };
+    localStorage.setItem('savedGame', JSON.stringify(gameState));
+  }
+
+  function loadSavedGame() {
+    const savedGame = localStorage.getItem('savedGame')
+    if (savedGame) {
+      const gameState = JSON.parse(savedGame)
+      pieces.value = gameState.pieces
+      currentPlayer.value = gameState.currentPlayer
+      turnCount.value = gameState.turnCount
+      gameStatus.value = gameState.gameStatus
+      gameTime.value = gameState.gameTime
+      moveHistory.value = gameState.moveHistory
+      
+      // 如果游戏状态是进行中，重新启动计时器
+      if (gameStatus.value === GAME_STATUS.PLAYING) {
+        stopTimer()
+        startTimer()
+      }
+      return true
+    }
+    return false
+  }
+
   return {
     pieces,
     currentPlayer,
@@ -95,8 +128,10 @@ export const useGameStore = defineStore('game', () => {
     placePiece,
     startTimer,
     stopTimer,
-    resetGame,
+    restartGame,
     regretMove,
     updateGameStatus,
+    loadSavedGame,
+    saveGame,
   }
 })

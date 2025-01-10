@@ -27,7 +27,7 @@ const gameOverMessage = computed(() => {
     <h2>游戏结束</h2>
     <p>{{ gameOverMessage }}</p>
     <div class="buttons">
-      <button @click="store.resetGame()">重新开始</button>
+      <button @click="store.restartGame()">重新开始</button>
       <button @click="store.updateGameStatus(GAME_STATUS.PLAYING)">继续游戏</button>
     </div>
   </div>
