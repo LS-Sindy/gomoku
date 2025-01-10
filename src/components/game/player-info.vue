@@ -1,9 +1,6 @@
 <script setup>
-import { useRestartGame } from './buttons/useRestartGame'
-import { useRegretGame } from './buttons/useRegretGame'
-import { useSaveGame } from './buttons/useSaveGame'
-import { useGiveUpGame } from './buttons/useGiveUpGame'
-
+import { useGameStore } from '../../stores/game'
+import { GAME_STATUS } from '../../utils/constants'
 const props = defineProps({
   playerName: {
     type: String,
@@ -11,10 +8,31 @@ const props = defineProps({
   }
 })
 
-const { handleRestart } = useRestartGame()
-const { handleRegret } = useRegretGame()
-const { handleSaveGame } = useSaveGame()
-const { handleGiveUp } = useGiveUpGame()
+const store = useGameStore()
+
+const handleRestart = () => {
+  store.resetGame()
+  store.isGameOver = false
+  console.log('重置游戏')
+}
+
+const handleGiveUp = () => {
+  store.updateGameStatus(GAME_STATUS.GIVE_UP)
+}
+
+const handleRegret = () => {
+  store.regretMove()
+}
+
+const handleSaveGame = () => {
+  const gameState = {
+    pieces: store.pieces,
+    currentPlayer: store.currentPlayer,
+    turnCount: store.turnCount,
+    timestamp: new Date().toISOString()
+  }
+  localStorage.setItem('savedGame', JSON.stringify(gameState))
+}
 </script>
 
 <template>

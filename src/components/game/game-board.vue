@@ -3,8 +3,8 @@ import { useGameStore } from '../../stores/game'
 import { useGameLogic } from '../../composables/useGameLogic'
 import GameInfo from './game-info.vue'
 import PlayerInfo from './player-info.vue'
-import { useRestartGame } from './buttons/useRestartGame'
 import { GAME_STATUS, PIECE_TYPE } from '../../utils/constants'
+import GameOver from './game-over.vue'
 
 const props = defineProps({
   playerName: {
@@ -15,17 +15,15 @@ const props = defineProps({
 
 const store = useGameStore()
 const { checkWin, isBoardFull } = useGameLogic(store.pieces)
-const { handleRestart } = useRestartGame()
 
 const handleCellClick = (index) => {
   if (store.placePiece(index)) {
-    const result = checkWin(index)
-    if (result) {
-      store.gameStatus = GAME_STATUS.WIN
+    if (checkWin(index)) {
+      store.updateGameStatus(GAME_STATUS.WIN)
       const winner = store.currentPlayer === PIECE_TYPE.BLACK ? '白子' : '黑子'
       console.log('游戏结束，' + winner + '获胜')
     } else if (isBoardFull.value) {
-      store.gameStatus = GAME_STATUS.DRAW
+      store.updateGameStatus(GAME_STATUS.DRAW)
       console.log('游戏结束，平局')
     }
   }
@@ -52,9 +50,10 @@ const handleCellClick = (index) => {
           />
         </div>
       </div>
+      <game-over v-if="store.isGameOver" />
       <p>当前玩家：{{ store.currentPlayer === 1 ? '黑子' : '白子' }}</p>
     </div>
-
+ 
     <player-info :player-name="playerName" />
   </div>
 </template>

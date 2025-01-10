@@ -72,8 +72,8 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 32px;
-  height: 32px;
+  width: 88%;
+  height: 88%;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -88,9 +88,8 @@ body {
 }
 
 /* 结束游戏样式 */
-#end-game {
-  display: none;
-  position: absolute;
+#game-over {
+  position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

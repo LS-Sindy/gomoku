@@ -1,35 +1,32 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { GAME_STATUS, PIECE_TYPE } from '../utils/constants'
+import { GAME_STATUS } from '../utils/constants'
 
 export const useGameStore = defineStore('game', () => {
   const pieces = ref(Array(225).fill(null))
-  const currentPlayer = ref(PIECE_TYPE.BLACK)
+  const currentPlayer = ref(1)  // 1: 黑, 2: 白
   const gameStatus = ref(GAME_STATUS.PLAYING)
   const turnCount = ref(0)
+  const gameTime = ref(0)
   const moveHistory = ref([])
+  let timer = null
 
+  // 计算属性：判断游戏是否结束
   const isGameOver = computed(() => {
     return gameStatus.value !== GAME_STATUS.PLAYING
   })
 
-  function regretMove() {
-    if (turnCount.value > 0 && moveHistory.value.length > 0) {
-      const lastMove = moveHistory.value.pop()
-      
-      if (lastMove) {
-        pieces.value[lastMove.index] = null
-        currentPlayer.value = lastMove.player
-        turnCount.value--
-        if (isGameOver.value) {
-          gameStatus.value = GAME_STATUS.PLAYING
-        }
-      }
+  function updateGameStatus(status) {
+    gameStatus.value = status
+    if (status !== GAME_STATUS.PLAYING) {
+      stopTimer()
     }
   }
 
   function placePiece(index) {
-    if (pieces.value[index] || isGameOver.value) return false
+    if (pieces.value[index] || isGameOver.value) {
+      return false
+    }
     
     moveHistory.value.push({
       index,
@@ -39,12 +36,52 @@ export const useGameStore = defineStore('game', () => {
     
     pieces.value[index] = currentPlayer.value
     turnCount.value++
-    
-    currentPlayer.value = currentPlayer.value === PIECE_TYPE.BLACK 
-      ? PIECE_TYPE.WHITE 
-      : PIECE_TYPE.BLACK
+    currentPlayer.value = currentPlayer.value === 1 ? 2 : 1
     
     return true
+  }
+
+  function startTimer() {
+    timer = setInterval(() => {
+      gameTime.value++
+    }, 1000)
+  }
+
+  function stopTimer() {
+    if (timer) {
+      clearInterval(timer)
+      timer = null
+    }
+  }
+
+  const formattedTime = computed(() => {
+    const minutes = Math.floor(gameTime.value / 60)
+    const seconds = gameTime.value % 60
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  })
+
+  function resetGame() {
+    pieces.value = Array(225).fill(null)
+    currentPlayer.value = 1
+    gameStatus.value = GAME_STATUS.PLAYING
+    turnCount.value = 0
+    gameTime.value = 0
+    moveHistory.value = []
+    stopTimer()
+    startTimer()
+  }
+
+  function regretMove() {
+    if(moveHistory.value.length > 0 && turnCount.value > 0) {
+      const lastMove = moveHistory.value.pop();
+      pieces.value[lastMove.index] = null;
+      currentPlayer.value = lastMove.player;
+      turnCount.value--;
+      isGameOver.value = false
+      if (gameStatus.value !== 'PLAYING') {
+        gameStatus.value = 'PLAYING'
+      }
+    }
   }
 
   return {
@@ -52,9 +89,14 @@ export const useGameStore = defineStore('game', () => {
     currentPlayer,
     gameStatus,
     turnCount,
-    moveHistory,
+    gameTime,
+    formattedTime,
     isGameOver,
     placePiece,
-    regretMove
+    startTimer,
+    stopTimer,
+    resetGame,
+    regretMove,
+    updateGameStatus,
   }
 })

@@ -11,9 +11,10 @@ export const PIECE_TYPE = {
 }
 
 export const GAME_STATUS = {
-    PLAYING: 'playing',
-    WIN: 'win',
-    DRAW: 'draw'
+    PLAYING: 'PLAYING',
+    WIN: 'WIN',
+    DRAW: 'DRAW',
+    GIVE_UP: 'GIVE_UP'
 }
 
 export const MESSAGES = {

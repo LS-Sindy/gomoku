@@ -14,7 +14,6 @@ const handleGameStart = (nickname) => {
 
 <template>
   <div class="container">
-    <!-- 使用 v-if 进行组件切换，避免了原代码中的 DOM 操作 -->
     <login-form 
       v-if="!isLoggedIn" 
       @game-start="handleGameStart"
