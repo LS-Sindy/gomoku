@@ -4,6 +4,12 @@ import { useGameStore } from '../../stores/game'
 import { GAME_STATUS, PIECE_TYPE } from '../../utils/constants'
 
 const store = useGameStore()
+const emit = defineEmits(['gameRestarted'])
+
+const handleRestart = () => {
+  store.resetGame()
+  emit('gameRestarted')
+}
 
 const isGameOver = computed(() => {
   return store.isGameOver
@@ -23,11 +29,11 @@ const gameOverMessage = computed(() => {
 </script>
 
 <template>
-  <div v-if="isGameOver" id="game-over">
+  <div v-if="store.isGameOver" id="game-over">
     <h2>游戏结束</h2>
     <p>{{ gameOverMessage }}</p>
     <div class="buttons">
-      <button @click="store.restartGame()">重新开始</button>
+      <button @click="handleRestart">重新开始</button>
       <button @click="store.updateGameStatus(GAME_STATUS.PLAYING)">继续游戏</button>
     </div>
   </div>

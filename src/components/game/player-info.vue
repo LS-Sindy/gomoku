@@ -10,10 +10,11 @@ const props = defineProps({
 })
 
 const store = useGameStore()
-
+const emit = defineEmits(['gameRestarted'])
 const handleRestart = () => {
-  store.restartGame()
-  console.log('重置游戏')
+  store.resetGame()
+  emit('gameRestarted')
+  console.log('重新开始')
 }
 
 const handleGiveUp = () => {

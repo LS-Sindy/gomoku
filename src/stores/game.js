@@ -60,14 +60,15 @@ export const useGameStore = defineStore('game', () => {
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   })
 
-  function restartGame() {
+  function resetGame() {
+    stopTimer()
     pieces.value = Array(225).fill(null)
     currentPlayer.value = 1
     gameStatus.value = GAME_STATUS.PLAYING
     turnCount.value = 0
     gameTime.value = 0
     moveHistory.value = []
-    stopTimer()
+    localStorage.removeItem('savedGame')
     startTimer()
   }
 
@@ -128,7 +129,7 @@ export const useGameStore = defineStore('game', () => {
     placePiece,
     startTimer,
     stopTimer,
-    restartGame,
+    resetGame,
     regretMove,
     updateGameStatus,
     loadSavedGame,

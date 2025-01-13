@@ -1,6 +1,7 @@
 <script setup>
 import { useGameStore } from '../../stores/game'
 import { useGameLogic } from '../../composables/useGameLogic'
+import { watch } from 'vue'
 import GameInfo from './game-info.vue'
 import PlayerInfo from './player-info.vue'
 import { GAME_STATUS, PIECE_TYPE } from '../../utils/constants'
@@ -14,7 +15,15 @@ const props = defineProps({
 })
 
 const store = useGameStore()
-const { checkWin, isBoardFull } = useGameLogic(store.pieces)
+let { checkWin, isBoardFull } = useGameLogic(store.pieces)
+
+watch(() => store.turnCount, (newCount) => {
+  if (newCount === 0) {
+    const logic = useGameLogic(store.pieces)
+    checkWin = logic.checkWin
+    isBoardFull = logic.isBoardFull
+  }
+})
 
 const handleCellClick = (index) => {
   if (store.placePiece(index)) {
